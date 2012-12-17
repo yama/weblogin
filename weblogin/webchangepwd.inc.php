@@ -119,16 +119,14 @@ function getWebChangePwdtpl(){
               <label for="oldpassword" style="width:120px">Current password:</label>
               </td>
               <td style="padding:0px 0px 0px 0px;">
-              <input type="password" name="oldpassword" size="20" /><br />
+              <input type="password" name="oldpassword" size="20" autocomplete="off" /><br />
               </td>
             </tr>
           </table>
           </fieldset> <fieldset style="width:300px">
           <legend><b>New password method</b></legend>
-          <input type="radio" name="passwordgenmethod" value="g" checked />Let this website 
-          generate a password.<br />
-          <input type="radio" name="passwordgenmethod" value="spec" />Let me specify 
-          the password:<br />
+          <label><input type="radio" name="passwordgenmethod" value="g" checked  style="display:inline;" />Let this website generate a password.</label><br />
+          <label><input type="radio" name="passwordgenmethod" value="spec"  style="display:inline;" />Let me specify the password:</label><br />
           <div style="padding-left:20px">
             <table border="0" cellpadding="0">
               <tr>
@@ -136,7 +134,7 @@ function getWebChangePwdtpl(){
                 <label for="specifiedpassword" style="width:120px">New password:</label>
                 </td>
                 <td style="padding:0px 0px 0px 0px;">
-                <input type="password" name="specifiedpassword" onchange="documentdirty=true;" onkeypress="document.changepwdfrm.passwordgenmethod[1].checked=true;" size="20" /><br />
+                <input type="password" name="specifiedpassword" onkeypress="document.changepwdfrm.passwordgenmethod[1].checked=true;" size="20" autocomplete="off" /><br />
                 </td>
               </tr>
               <tr>
@@ -144,20 +142,18 @@ function getWebChangePwdtpl(){
                 <label for="confirmpassword" style="width:120px">Confirm password:</label>
                 </td>
                 <td style="padding:0px 0px 0px 0px;">
-                <input type="password" name="confirmpassword" onchange="documentdirty=true;" onkeypress="document.changepwdfrm.passwordgenmethod[1].checked=true;" size="20" /><br />
+                <input type="password" name="confirmpassword" onkeypress="document.changepwdfrm.passwordgenmethod[1].checked=true;" size="20" /><br />
                 </td>
               </tr>
             </table>
             <small><span class="warning" style="font-weight:normal">The password you 
             specify needs to be at least 6 characters long.</span></small>
           </div>
-          </fieldset><br />
+          </fieldset>
           <fieldset style="width:300px">
           <legend><b>Password notification method</b></legend>
-          <input type="radio" name="passwordnotifymethod" value="e" />Send the new password 
-          by e-mail.<br />
-          <input type="radio" name="passwordnotifymethod" value="s" checked />Show the new password 
-          on screen.
+          <label><input type="radio" name="passwordnotifymethod" value="e"  style="display:inline;" />Send the new password by email.</label><br />
+          <label><input type="radio" name="passwordnotifymethod" value="s" checked  style="display:inline;" />Show the new password on screen.</label>
           </fieldset></td>
         </tr>
         <tr>
@@ -176,5 +172,3 @@ function getWebChangePwdtpl(){
     ob_end_clean();
     return $t;
 }
-
-?>

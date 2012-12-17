@@ -28,28 +28,20 @@
 #
 #	[[WebChangePwd? &tpl=`ChangePwd`]] 
 
-# Set Snippet Paths 
-$snipPath  = (($modx->insideManager())? "../":"");
-$snipPath .= "assets/snippets/";
-
 # check if inside manager
-if ($m = $modx->insideManager()) {
-	return ''; # don't go any further when inside manager
-}
-
+// don't go any further when inside manager
+if($modx->isBackend()) return '';
 
 # Snippet customize settings
-$tpl		= isset($tpl)? $tpl:"";
+$tpl = isset($tpl) ? $tpl : '';
 
 # System settings
-$isPostBack		= count($_POST) && isset($_POST['cmdwebchngpwd']);
+$isPostBack = count($_POST) && isset($_POST['cmdwebchngpwd']);
 
 # Start processing
-include_once $snipPath."weblogin/weblogin.common.inc.php";
-include_once $snipPath."weblogin/webchangepwd.inc.php";
+$weblogin_path = $modx->config['base_path'] . 'assets/snippets/weblogin/';
+global $output;
+include_once("{$weblogin_path}weblogin.common.inc.php");
+include_once("{$weblogin_path}webchangepwd.inc.php");
 
-# Return
 return $output;
-
-
-
