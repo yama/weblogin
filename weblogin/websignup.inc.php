@@ -109,23 +109,36 @@ else if ($isPostBack){
     }
 
     // create the user account
-    $sql = "INSERT INTO ".$tbl_web_users." (username, password)
-            VALUES('".$username."', md5('".$password."'));";
-    $rs = $modx->db->query($sql);
-    if(!$rs){
+    $f = array();
+    $f['username'] = $username;
+    $f['password'] = md5($password);
+    $internalKey = $modx->db->insert($f, $tbl_web_users);
+    if(!$internalKey){
         $output = webLoginAlert("An error occured while attempting to save the user.").$tpl;
         return;
     }
-    // now get the id
-    $key=$modx->db->getInsertId();
 
     // save user attributes
-    $sql = "INSERT INTO ".$tbl_web_user_attributes." (internalKey, fullname, email, zip, state, country)
-            VALUES($key, '$fullname', '$email', '$zip', '$state', '$country');";
-    $rs = $modx->db->query($sql);
+    $f = compact('internalKey','fullname','email','zip','state','country');
+    $rs = $modx->db->insert($f, $tbl_web_user_attributes);
     if(!$rs){
         $output = webLoginAlert("An error occured while attempting to save the user's attributes.").$tpl;
         return;
+    }
+    elseif(isset($notify) && $notify!=0) {
+    	if(method_exists($modx, 'sendmail')) {
+    		$param['sendto']  = (!isset($notifyTo))      ? $modx->config['emailsender'] : $notifyto;
+    		$param['subject'] = (!isset($notifySubject)) ? 'Notification of new registration' : $notifySubject;
+    		if(isset($notifyTpl)) $mailBody = $modx->getChunk($notifyTpl);
+    		else                  $mailBody = getNotifyTpl();
+    		$uri     = $_SERVER['REQUEST_URI'];
+    		$referer = $_SERVER['HTTP_REFERER'];
+    		$ua      = $_SERVER['HTTP_USER_AGENT'];
+    		$ip      = $_SERVER['REMOTE_ADDR'];
+    		$ph = compact('username','fullname','email','zip','state','country','uri','referer','ua','ip');
+    		$mailBody = $modx->parsePlaceholder($mailBody, $ph);
+    		$modx->sendmail($param, $mailBody);
+    	}
     }
 
     // add user to web groups
@@ -223,4 +236,21 @@ function getCountryCode()
 		$option[] = '<option value="' . $k . '">' . $v . '</option>';
 	}
 	return join("\n",$option);
+}
+
+function getNotifyTpl()
+{
+	$tpl = <<< EOT
+username : [+username+]
+fullname : [+fullname+]
+email : [+email+]
+zip : [+zip+]
+state : [+state+]
+country : [+country+]
+uri : [+uri+]
+referer : [+referer+]
+ua : [+ua+]
+ip : [+ip+]
+EOT;
+	return $tpl;
 }
